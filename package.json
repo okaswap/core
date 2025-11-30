@@ -2,6 +2,9 @@
   "name": "@okaswap/core",
   "version": "1.0.0",
   "description": "the Heartbeat of Liquidity on Somnia",
+  "scripts": {
+    "verify": "npx hardhat verify --network shannon"
+  },
   "directories": {
     "lib": "lib"
   },

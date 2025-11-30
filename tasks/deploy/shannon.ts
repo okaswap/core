@@ -1,9 +1,9 @@
 import { task, types } from "hardhat/config";
-import { ethers } from "hardhat";
+import type { HardhatRuntimeEnvironment } from "hardhat/types";
 
 import shannonConfig from "./constants/shannonConfig";
 
-async function getInitCode(hre: any, name: string, args: any[]) {
+async function getInitCode(hre: HardhatRuntimeEnvironment, name: string, args: any[]) {
   const f = await hre.ethers.getContractFactory(name);
   return f.getDeployTransaction(...args).data!;
 }
@@ -13,7 +13,7 @@ async function getInitCodeHash(initCode: string) {
 }
 
 task("deploy:create2factory", "Deploy CREATE2Factory contract")
-  .setAction(async function (_, hre) {
+  .setAction(async function (_, hre: HardhatRuntimeEnvironment) {
     const [deployer] = await hre.ethers.getSigners();
     console.log("Deploying CREATE2Factory with Address:", deployer.address);
 
@@ -24,11 +24,11 @@ task("deploy:create2factory", "Deploy CREATE2Factory contract")
   });
 
 task("deploy:shannon", "Deploys Oka with Shannon config")
-  .addParam("initializeMinter", "Whether to run minter.initialize", "false", types.boolean)
-  .addParam("useCreate2", "Deploy Oka with CREATE2", "false", types.boolean)
+  .addParam("initializeMinter", "Whether to run minter.initialize", false, types.boolean)
+  .addParam("useCreate2", "Deploy Oka with CREATE2", false, types.boolean)
   .addParam("salt", "Salt for CREATE2 deployment", "Okaswap", types.string)
   .addParam("factory", "CREATE2Factory address used for vanity deployment", "0x0000000000000000000000000000000000000000", types.string)
-  .setAction(async function (taskArguments, hre) {
+  .setAction(async function (taskArguments, hre: HardhatRuntimeEnvironment) {
 
     const ACONFIG = shannonConfig;
     const gasPrice = hre.ethers.utils.parseUnits(ACONFIG.PRICE, 'wei');
@@ -123,7 +123,7 @@ task("deploy:shannon", "Deploys Oka with Shannon config")
     await pairFactory.deployed();
     console.log("PairFactory deployed:", pairFactory.address);
 
-    const router = await Router.deploy(pairFactory.address, ACONFIG.WETH, { gasPrice });
+    const router = await Router.deploy(pairFactory.address, ACONFIG.WSTT, { gasPrice });
     await router.deployed();
     console.log("Router deployed:", router.address);
 
@@ -167,9 +167,10 @@ task("deploy:shannon", "Deploys Oka with Shannon config")
     console.log("MerkleClaim deployed:", claim.address);
 
     // -----------------------------
-    // INITIALIZE (tetap sama)
+    // INITIALIZE
     // -----------------------------
-    await (await ethers.getContractAt("Oka", okaAddress)).initialMint(ACONFIG.teamEOA, { gasPrice });
+    const okaContract = await hre.ethers.getContractAt("Oka", okaAddress);
+    await okaContract.initialMint(ACONFIG.teamEOA, { gasPrice });
     console.log("Initial minted");
 
     console.log("Successfully deployed Oka to Shannon (⁠ﾉ⁠◕⁠ヮ⁠◕⁠)⁠ﾉ⁠*⁠.⁠✧");

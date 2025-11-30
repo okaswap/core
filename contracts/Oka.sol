@@ -1,5 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity 0.8.13;
+/**
+
+
+
+   ____  __ __ ___   ______       _____    ____ 
+  / __ \/ //_//   | / ___/ |     / /   |  / __ \
+ / / / / ,<  / /| | \__ \| | /| / / /| | / /_/ /
+/ /_/ / /| |/ ___ |___/ /| |/ |/ / ___ |/ ____/ 
+\____/_/ |_/_/  |_/____/ |__/|__/_/  |_/_/      
+                                                
+
+
+
+*/
 
 import "contracts/interfaces/IOka.sol";
 
@@ -14,24 +28,36 @@ contract Oka is IOka {
     mapping(address => mapping(address => uint)) public allowance;
 
     bool public initialMinted;
+    bool public initialized;      
     address public minter;
 
     event Transfer(address indexed from, address indexed to, uint value);
     event Approval(address indexed owner, address indexed spender, uint value);
+    event Initialized(address owner);   
 
     constructor() {
-        minter = msg.sender;
-        _mint(msg.sender, 0);
     }
 
-    // No checks as its meant to be once off to set minting rights to BaseV1 Minter
+    /**
+     * @notice Initialize
+     */
+    function initialize(address _owner) external {
+        require(!initialized, "Already initialized");
+        require(_owner != address(0), "Invalid owner");
+
+        initialized = true;
+        minter = _owner;
+        _mint(_owner, 0);
+        emit Initialized(_owner);
+    }
+
     function setMinter(address _minter) external {
-        require(msg.sender == minter);
+        require(msg.sender == minter, "Not minter");
         minter = _minter;
     }
 
     function initialMint(address _recipient) external {
-        require(msg.sender == minter && !initialMinted);
+        require(msg.sender == minter && !initialMinted, "Not allowed");
         initialMinted = true;
         _mint(_recipient, 150 * 1e6 * 1e18); // 150M OKA
     }
@@ -73,7 +99,7 @@ contract Oka is IOka {
     }
 
     function mint(address account, uint amount) external returns (bool) {
-        require(msg.sender == minter);
+        require(msg.sender == minter, "Not minter");
         _mint(account, amount);
         return true;
     }
