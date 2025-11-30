@@ -5,9 +5,6 @@ import "@typechain/hardhat";
 import "hardhat-preprocessor";
 import "hardhat-abi-exporter";
 
-import "./tasks/accounts";
-import "./tasks/deploy";
-
 import fs from "fs";
 import { resolve } from "path";
 
@@ -16,6 +13,9 @@ import { HardhatUserConfig, task } from "hardhat/config";
 
 // import somniaConfig from "./tasks/deploy/constants/somniaConfig";
 import shannonConfig from "./tasks/deploy/constants/shannonConfig";
+//import "./tasks/accounts";
+import "./tasks/deploy";
+import "./tasks/mineSalt";
 
 dotenvConfig({ path: resolve(__dirname, "./.env") });
 
