@@ -41,22 +41,6 @@ const config: HardhatUserConfig = {
       //   blockNumber: 16051852
       // }
     },
-    opera: {
-      url: "https://rpc.fantom.network",
-      accounts: [process.env.PRIVATE_KEY!],
-    },
-    ftmTestnet: {
-      url: "https://rpc.testnet.fantom.network",
-      accounts: [process.env.PRIVATE_KEY!],
-    },
-    optimisticEthereum: {
-      url: "https://mainnet.optimism.io",
-      accounts: [process.env.PRIVATE_KEY!],
-    },
-    optimisticKovan: {
-      url: "https://kovan.optimism.io",
-      accounts: [process.env.PRIVATE_KEY!],
-    },
     // SOMNIA
     somnia: {
   url: "https://somnia-rpc.publicnode.com",
