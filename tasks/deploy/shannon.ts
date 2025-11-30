@@ -1,8 +1,5 @@
 import { task, types } from "hardhat/config";
-<<<<<<< HEAD
-=======
 import { ethers } from "hardhat";
->>>>>>> 74e420beaa5380d7e94a223b3ad6ee102ec961b4
 import type { HardhatRuntimeEnvironment } from "hardhat/types";
 
 import shannonConfig from "./constants/shannonConfig";
@@ -35,6 +32,7 @@ task("deploy:shannon", "Deploys Oka with Shannon config")
   .setAction(async function (taskArguments, hre: HardhatRuntimeEnvironment) {
 
     const ACONFIG = shannonConfig;
+    const iGas = hre.ethers.utils.parseUnits(10000000000, 'wei');
     const gasPrice = hre.ethers.utils.parseUnits(ACONFIG.PRICE, 'wei');
     const [deployer] = await hre.ethers.getSigners();
 
@@ -174,7 +172,7 @@ task("deploy:shannon", "Deploys Oka with Shannon config")
     // INITIALIZE
     // -----------------------------
     const okaContract = await hre.ethers.getContractAt("Oka", okaAddress);
-    await okaContract.initialMint(ACONFIG.teamEOA, { gasPrice });
+    await okaContract.initialMint(ACONFIG.teamEOA, { iGas });
     console.log("Initial minted");
 
     console.log("Successfully deployed Oka to Shannon (⁠ﾉ⁠◕⁠ヮ⁠◕⁠)⁠ﾉ⁠*⁠.⁠✧");
