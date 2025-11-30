@@ -1,4 +1,8 @@
 import { task, types } from "hardhat/config";
+<<<<<<< HEAD
+=======
+import { ethers } from "hardhat";
+>>>>>>> 74e420beaa5380d7e94a223b3ad6ee102ec961b4
 import type { HardhatRuntimeEnvironment } from "hardhat/types";
 
 import shannonConfig from "./constants/shannonConfig";
